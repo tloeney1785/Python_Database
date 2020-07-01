@@ -6,7 +6,11 @@ from PIL import ImageTk, Image
 import pymysql
 import os 
 import shutil 
-# import dbconfig
+import config
+
+def on_tab_selected(event):
+    selected_tab = event.widget.select()
+    tab_text = event.widget.tab(selected_tab, "text")
 
 form = tk.Tk()
 form.title("Database")
@@ -14,6 +18,7 @@ form.geometry("500x280")
 tab_parent = ttk.Notebook(form)
 tab1 = ttk.Frame(tab_parent)
 tab2 = ttk.Frame(tab_parent)
+tab_parent.bind("<<NotebookTabChanged>>", on_tab_selected)
 tab_parent.add(tab1, text="All Entries")
 tab_parent.add(tab2, text="Add New Entry")
 
@@ -24,7 +29,9 @@ jobLabelTabOne = tk.Label(tab1, text="Job Title:", font="times 14")
 firstEntryTabOne = tk.Entry(tab1, font="times 12")
 familyEntryTabOne = tk.Entry(tab1, font="times 12")
 jobEntryTabOne = tk.Entry(tab1, font="times 12")
-imgLabelTabOne = tk.Label(tab1)
+openImageTabOne = Image.open(path)
+imgTabOne = ImageTk.PhotoImage(openImageTabOne)
+imgLabelTabOne = tk.Label(tab1,image=imgTabOne)
 buttonForward = tk.Button(tab1, text="==> Next ==>", font="times 14")
 buttonBack = tk.Button(tab1, text="<== Prev <==", font="times 14")
 ###Grid placements
