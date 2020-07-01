@@ -12,6 +12,8 @@ def on_tab_selected(event):
     selected_tab = event.widget.select()
     tab_text = event.widget.tab(selected_tab, "text")
 
+file_name = "default.png"
+path = config.PHOTO_DIRECTORY + file_name
 form = tk.Tk()
 form.title("Database")
 form.geometry("500x280")
@@ -52,7 +54,9 @@ jobLabelTabTwo = tk.Label(tab2, text="Job Title:", font="times 14")
 firstEntryTabTwo = tk.Entry(tab2, font="times 12")
 familyEntryTabTwo = tk.Entry(tab2, font="times 12")
 jobEntryTabTwo = tk.Entry(tab2, font="times 12")
-imgLabelTabTwo = tk.Label(tab2, font="times 12")
+openImageTabTwo = Image.open(path)
+imgTabTwo = ImageTk.PhotoImage(openImageTabTwo)
+imgLabelTabTwo = tk.Label(tab2,image=imgTabTwo)
 buttonCommit = tk.Button(tab2, text="Submit", font="times 14")
 buttonAddImage = tk.Button(tab2, text="Add Image", font="times 14")
 ###GRID PLACEMENTS

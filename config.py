@@ -1,1 +1,1 @@
-PHOTO_DIRECTORY="C:\\Users\\tloen\\Desktop\\github projects\\PythonDatabase\\photos"
+PHOTO_DIRECTORY="C:\\Users\\tloen\\Desktop\\github projects\\PythonDatabase\\photos\\"
