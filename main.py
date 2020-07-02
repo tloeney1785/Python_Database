@@ -12,8 +12,25 @@ def on_tab_selected(event):
     selected_tab = event.widget.select()
     tab_text = event.widget.tab(selected_tab, "text")
 
+def load_database_results():
+    try:
+        con = pymysql.connect(host=config.DB_SERVER,
+        user=config.DB_USER,
+        password=config.DB_PASS,
+        database=config.DB)
+        con.close()
+        messagebox.showinfo("Connected to Database", "Connected OK")
+
+    except pymysql.InternalError as e:
+
+        messagebox.showinfo("Connection Error", e)
+    return
+
 file_name = "default.png"
 path = config.PHOTO_DIRECTORY + file_name
+rows = None
+num_of_rows = None
+
 form = tk.Tk()
 form.title("Database")
 form.geometry("500x280")
@@ -70,6 +87,6 @@ jobEntryTabTwo.grid(row=2, column=1, padx=15, pady=15)
 buttonCommit.grid(row=4, column=0, padx=15, pady=15)
 buttonAddImage.grid(row=4, column=2, padx=15, pady=15)
 
+load_database_results()
 tab_parent.pack(expand=1, fill='both')
-
 form.mainloop()
