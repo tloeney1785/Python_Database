@@ -12,6 +12,7 @@ file_name = "default.png"
 path = config.PHOTO_DIRECTORY + file_name
 rows = None
 num_of_rows = None
+row_counter = 0
 
 def on_tab_selected(event):
     selected_tab = event.widget.select()
@@ -54,6 +55,22 @@ def load_photo_tab_one(file_path):
     imgLabelTabOne.configure(image=image)
     imgLabelTabOne.image = image
 
+def scroll_forward():
+    global row_counter
+    global num_of_rows
+    if row_counter >= (num_of_rows - 1):
+        messagebox.showinfo("Database Error", "End of database")
+    else:
+        row_counter = row_counter + 1
+        fName.set(rows[row_counter][1])
+        fam.set(rows[row_counter][2])
+        job.set(rows[row_counter][3])
+        try:
+            ph_path = config.PHOTO_DIRECTORY + rows[row_counter][4]
+            load_photo_tab_one(ph_path)
+        except FileNotFoundError:
+            load_photo_tab_one(config.PHOTO_DIRECTORY + "default.png")
+
 form = tk.Tk()
 form.title("Database")
 form.geometry("500x280")
@@ -81,7 +98,7 @@ familyEntryTabOne = tk.Entry(tab1, font="times 12",textvariable=fam)
 jobEntryTabOne = tk.Entry(tab1, font="times 12",textvariable=job)
 imgTabOne = image_path(path)
 imgLabelTabOne = tk.Label(tab1, image=imgTabOne)
-buttonForward = tk.Button(tab1, text="==> Next ==>", font="times 14")
+buttonForward = tk.Button(tab1, text="==> Next ==>", font="times 14", command=scroll_forward)
 buttonBack = tk.Button(tab1, text="<== Prev <==", font="times 14")
 ###Grid placements
 firstLabelTabOne.grid(row=0, column=0, padx=15, pady=15)
