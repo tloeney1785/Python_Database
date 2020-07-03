@@ -62,6 +62,17 @@ def scroll_forward():
         messagebox.showinfo("Database Error", "End of database")
     else:
         row_counter = row_counter + 1
+        scroll_load_data()
+
+def scroll_back():
+    global row_counter
+    if row_counter is 0:
+        messagebox.showinfo("Database Error", "Start of database")
+    else:
+        row_counter = row_counter - 1
+        scroll_load_data()
+
+def scroll_load_data():
         fName.set(rows[row_counter][1])
         fam.set(rows[row_counter][2])
         job.set(rows[row_counter][3])
@@ -99,7 +110,7 @@ jobEntryTabOne = tk.Entry(tab1, font="times 12",textvariable=job)
 imgTabOne = image_path(path)
 imgLabelTabOne = tk.Label(tab1, image=imgTabOne)
 buttonForward = tk.Button(tab1, text="==> Next ==>", font="times 14", command=scroll_forward)
-buttonBack = tk.Button(tab1, text="<== Prev <==", font="times 14")
+buttonBack = tk.Button(tab1, text="<== Prev <==", font="times 14", command=scroll_back)
 ###Grid placements
 firstLabelTabOne.grid(row=0, column=0, padx=15, pady=15)
 firstEntryTabOne.grid(row=0, column=1, padx=15, pady=15)
