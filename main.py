@@ -8,28 +8,41 @@ import os
 import shutil 
 import config
 
+file_name = "default.png"
+path = config.PHOTO_DIRECTORY + file_name
+rows = None
+num_of_rows = None
+
 def on_tab_selected(event):
     selected_tab = event.widget.select()
     tab_text = event.widget.tab(selected_tab, "text")
 
 def load_database_results():
+    
+global rows
+global num_of_rows
     try:
         con = pymysql.connect(host=config.DB_SERVER,
         user=config.DB_USER,
         password=config.DB_PASS,
         database=config.DB)
+        sql = "SELECT * FROM tbl_users"
+        cursor = con.cursor()
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        num_of_rows = cursor.rowcount
+        cursor.close()
         con.close()
-        messagebox.showinfo("Connected to Database", "Connected OK")
+        has_loaded_successfully = True
 
     except pymysql.InternalError as e:
+        has_loaded_successfully = database_error(e)
+    
+    return has_loaded_successfully
 
-        messagebox.showinfo("Connection Error", e)
-    return
-
-file_name = "default.png"
-path = config.PHOTO_DIRECTORY + file_name
-rows = None
-num_of_rows = None
+def database_error(err):
+    messagebox.showinfo("Error",err)
+    return false
 
 form = tk.Tk()
 form.title("Database")
@@ -41,13 +54,21 @@ tab_parent.bind("<<NotebookTabChanged>>", on_tab_selected)
 tab_parent.add(tab1, text="All Entries")
 tab_parent.add(tab2, text="Add New Entry")
 
+fName = tk.StringVar()
+fam = tk.StringVar()
+job = tk.StringVar()
+
+fNameTabTwo = tk.StringVar()
+famTabTwo = tk.StringVar()
+jobTabTwo = tk.StringVar()
+
 ###TAB ONE STUFF
 firstLabelTabOne = tk.Label(tab1, text="First Name:", font="times 14")
 familyLabelTabOne = tk.Label(tab1, text="Family Name:", font="times 14")
 jobLabelTabOne = tk.Label(tab1, text="Job Title:", font="times 14")
-firstEntryTabOne = tk.Entry(tab1, font="times 12")
-familyEntryTabOne = tk.Entry(tab1, font="times 12")
-jobEntryTabOne = tk.Entry(tab1, font="times 12")
+firstEntryTabOne = tk.Entry(tab1, font="times 12", textvariable=fName)
+familyEntryTabOne = tk.Entry(tab1, font="times 12",textvariable=fam)
+jobEntryTabOne = tk.Entry(tab1, font="times 12",textvariable=job)
 openImageTabOne = Image.open(path)
 imgTabOne = ImageTk.PhotoImage(openImageTabOne)
 imgLabelTabOne = tk.Label(tab1,image=imgTabOne)
@@ -68,9 +89,9 @@ buttonForward.grid(row=3, column=2, padx=15, pady=15)
 firstLabelTabTwo = tk.Label(tab2, text="First Name:", font="times 14")
 familyLabelTabTwo = tk.Label(tab2, text="Family Name:", font="times 14")
 jobLabelTabTwo = tk.Label(tab2, text="Job Title:", font="times 14")
-firstEntryTabTwo = tk.Entry(tab2, font="times 12")
-familyEntryTabTwo = tk.Entry(tab2, font="times 12")
-jobEntryTabTwo = tk.Entry(tab2, font="times 12")
+firstEntryTabTwo = tk.Entry(tab2, font="times 12",textvariable=fNameTabTwo)
+familyEntryTabTwo = tk.Entry(tab2, font="times 12",textvariable=famTabTwo)
+jobEntryTabTwo = tk.Entry(tab2, font="times 12",textvariable=jobTabTwo)
 openImageTabTwo = Image.open(path)
 imgTabTwo = ImageTk.PhotoImage(openImageTabTwo)
 imgLabelTabTwo = tk.Label(tab2,image=imgTabTwo)
@@ -87,6 +108,6 @@ jobEntryTabTwo.grid(row=2, column=1, padx=15, pady=15)
 buttonCommit.grid(row=4, column=0, padx=15, pady=15)
 buttonAddImage.grid(row=4, column=2, padx=15, pady=15)
 
-load_database_results()
+success = load_database_results()
 tab_parent.pack(expand=1, fill='both')
 form.mainloop()
