@@ -19,8 +19,8 @@ def on_tab_selected(event):
 
 def load_database_results():
     
-global rows
-global num_of_rows
+    global rows
+    global num_of_rows
     try:
         con = pymysql.connect(host=config.DB_SERVER,
         user=config.DB_USER,
@@ -43,6 +43,16 @@ global num_of_rows
 def database_error(err):
     messagebox.showinfo("Error",err)
     return false
+
+def image_path(file_path):
+    open_image = Image.open(file_path)
+    image = ImageTk.PhotoImage(open_image)
+    return image
+
+def load_photo_tab_one(file_path):
+    image = image_path(file_path)
+    imgLabelTabOne.configure(image=image)
+    imgLabelTabOne.image = image
 
 form = tk.Tk()
 form.title("Database")
@@ -69,9 +79,8 @@ jobLabelTabOne = tk.Label(tab1, text="Job Title:", font="times 14")
 firstEntryTabOne = tk.Entry(tab1, font="times 12", textvariable=fName)
 familyEntryTabOne = tk.Entry(tab1, font="times 12",textvariable=fam)
 jobEntryTabOne = tk.Entry(tab1, font="times 12",textvariable=job)
-openImageTabOne = Image.open(path)
-imgTabOne = ImageTk.PhotoImage(openImageTabOne)
-imgLabelTabOne = tk.Label(tab1,image=imgTabOne)
+imgTabOne = image_path(path)
+imgLabelTabOne = tk.Label(tab1, image=imgTabOne)
 buttonForward = tk.Button(tab1, text="==> Next ==>", font="times 14")
 buttonBack = tk.Button(tab1, text="<== Prev <==", font="times 14")
 ###Grid placements
@@ -92,9 +101,8 @@ jobLabelTabTwo = tk.Label(tab2, text="Job Title:", font="times 14")
 firstEntryTabTwo = tk.Entry(tab2, font="times 12",textvariable=fNameTabTwo)
 familyEntryTabTwo = tk.Entry(tab2, font="times 12",textvariable=famTabTwo)
 jobEntryTabTwo = tk.Entry(tab2, font="times 12",textvariable=jobTabTwo)
-openImageTabTwo = Image.open(path)
-imgTabTwo = ImageTk.PhotoImage(openImageTabTwo)
-imgLabelTabTwo = tk.Label(tab2,image=imgTabTwo)
+imgTabTwo = image_path(path)
+imgLabelTabTwo = tk.Label(tab2, image=imgTabTwo)
 buttonCommit = tk.Button(tab2, text="Submit", font="times 14")
 buttonAddImage = tk.Button(tab2, text="Add Image", font="times 14")
 ###GRID PLACEMENTS
@@ -109,5 +117,11 @@ buttonCommit.grid(row=4, column=0, padx=15, pady=15)
 buttonAddImage.grid(row=4, column=2, padx=15, pady=15)
 
 success = load_database_results()
+if success:
+    fName.set(rows[0][1])
+    fam.set(rows[0][2])
+    job.set(rows[0][3])
+    photo_path = config.PHOTO_DIRECTORY + rows[0][4]
+    load_photo_tab_one(photo_path)
 tab_parent.pack(expand=1, fill='both')
 form.mainloop()
