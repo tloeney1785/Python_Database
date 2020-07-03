@@ -17,6 +17,59 @@ image_selected = False
 image_file_name = None
 file_to_copy = None
 file_new_home = None
+blank_textboxes_tab_two = True
+
+def insert_into_database(first_field,family_field,job_field,photo_field):
+    try:
+        con = pymysql.connect(host=config.DB_SERVER,
+        user=config.DB_USER,
+        password=config.DB_PASS,
+        database=config.DB)
+        sql = "INSERT INTO tbl_users (First_Name, Last_Name, Job, Photo) VALUES (%s, %s, %s, %s)"
+        vals = (first_field, family_field, job_field, photo_field)
+        cursor = con.cursor()
+        cursor.execute(sql, vals)
+        con.commit()
+        cursor.close()
+        con.close()
+        messagebox.showinfo("Database", "Record Added to Database")
+    except pymysql.ProgrammingError as e:
+        database_error(e)
+    except pymysql.DataError as e:
+        database_error(e)
+    except pymysql.IntegrityError as e:
+        database_error(e)
+    except pymysql.NotSupportedError as e:
+        database_error(e)
+    except pymysql.OperationalError as e:
+        database_error(e)
+    except pymysql.InternalError as e:
+        database_error(e)
+
+def add_new_record():
+    global blank_textboxes_tab_two
+    global file_new_home
+    global file_to_copy
+    blank_textbox_count = 0
+    if famTabTwo.get() is "":
+        blank_textbox_count = blank_textbox_count + 1
+    if jobTabTwo.get() is "":
+        blank_textbox_count = blank_textbox_count + 1
+    if fNameTabTwo.get() is "":
+        blank_textbox_count = blank_textbox_count + 1
+    if blank_textbox_count > 0:
+        blank_textboxes_tab_two = True
+        messagebox.showinfo("Database Error", "Blank Text boxes")
+    elif blank_textbox_count is 0:
+        blank_textboxes_tab_two = False
+        if image_selected:
+            try:
+                shutil.copy(file_to_copy, file_new_home)
+            except shutil.SameFileError:
+                pass
+            insert_into_database(fNameTabTwo.get(), famTabTwo.get(), jobTabTwo.get(), image_file_name)
+        else:
+            messagebox.showinfo("File Error", "Please select an image")
 
 def load_photo_tab_two(file_path):
     image = image_path(file_path)
@@ -42,10 +95,18 @@ def select_image():
         image_selected = False
         messagebox.showinfo("File Error", err)
 
-
 def on_tab_selected(event):
+    global blank_textboxes_tab_two
+    global image_selected
     selected_tab = event.widget.select()
     tab_text = event.widget.tab(selected_tab, "text")
+    if tab_text == "All Entries":
+        if (blank_textboxes_tab_two is False) and (image_selected is True):
+            load_database_results()
+
+    if tab_text == "Add New Entry":
+        blank_textboxes_tab_two = True
+        image_selected = False
 
 def load_database_results():
     
@@ -160,7 +221,7 @@ familyEntryTabTwo = tk.Entry(tab2, font="times 12",textvariable=famTabTwo)
 jobEntryTabTwo = tk.Entry(tab2, font="times 12",textvariable=jobTabTwo)
 imgTabTwo = image_path(path)
 imgLabelTabTwo = tk.Label(tab2, image=imgTabTwo)
-buttonCommit = tk.Button(tab2, text="Submit", font="times 14")
+buttonCommit = tk.Button(tab2, text="Submit", font="times 14",command=add_new_record)
 buttonAddImage = tk.Button(tab2, text="Add Image", font="times 14", command=select_image)
 ###GRID PLACEMENTS
 firstLabelTabTwo.grid(row=0, column=0, padx=15, pady=15)
