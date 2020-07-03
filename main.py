@@ -13,6 +13,35 @@ path = config.PHOTO_DIRECTORY + file_name
 rows = None
 num_of_rows = None
 row_counter = 0
+image_selected = False
+image_file_name = None
+file_to_copy = None
+file_new_home = None
+
+def load_photo_tab_two(file_path):
+    image = image_path(file_path)
+    imgLabelTabTwo.configure(image=image)
+    imgLabelTabTwo.image = image
+
+def select_image():
+    global image_selected
+    global image_file_name
+    global file_new_home
+    global file_to_copy
+    path_to_image = filedialog.askopenfilename(initialdir="/",
+    title="Open File",
+    filetypes=(("PNGs", "*.png"), ("GIFs", "*.gif"), ("All Files", "*.*")))
+    try:
+        if path_to_image:
+            image_file_name = os.path.basename(path_to_image)
+            file_new_home = config.PHOTO_DIRECTORY + image_file_name
+            file_to_copy = path_to_image
+            image_selected = True
+            load_photo_tab_two(file_to_copy)
+    except IOError as err:
+        image_selected = False
+        messagebox.showinfo("File Error", err)
+
 
 def on_tab_selected(event):
     selected_tab = event.widget.select()
@@ -132,7 +161,7 @@ jobEntryTabTwo = tk.Entry(tab2, font="times 12",textvariable=jobTabTwo)
 imgTabTwo = image_path(path)
 imgLabelTabTwo = tk.Label(tab2, image=imgTabTwo)
 buttonCommit = tk.Button(tab2, text="Submit", font="times 14")
-buttonAddImage = tk.Button(tab2, text="Add Image", font="times 14")
+buttonAddImage = tk.Button(tab2, text="Add Image", font="times 14", command=select_image)
 ###GRID PLACEMENTS
 firstLabelTabTwo.grid(row=0, column=0, padx=15, pady=15)
 firstEntryTabTwo.grid(row=0, column=1, padx=15, pady=15)
