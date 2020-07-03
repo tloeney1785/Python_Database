@@ -172,6 +172,23 @@ def scroll_load_data():
         except FileNotFoundError:
             load_photo_tab_one(config.PHOTO_DIRECTORY + "default.png")
 
+def search_records():
+    con = pymysql.connect(host=config.DB_SERVER,
+        user=config.DB_USER,
+        password=config.DB_PASS,
+        database=config.DB)
+    sql_query = "SELECT * FROM tbl_users WHERE Job=%s AND Last_Name=%s"
+    vals = (options_var.get(), search_text_var.get())
+    cursor = con.cursor()
+    cursor.execute(sql_query, vals)
+    my_rows = cursor.fetchall()
+    total_rows = cursor.rowcount
+    cursor.close()
+    con.close()
+    print(my_rows)
+    print("TOTAL ROWS: ",total_rows)
+
+
 form = tk.Tk()
 form.title("Database")
 form.geometry("500x280")
