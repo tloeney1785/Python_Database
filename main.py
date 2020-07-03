@@ -178,13 +178,16 @@ form.geometry("500x280")
 tab_parent = ttk.Notebook(form)
 tab1 = ttk.Frame(tab_parent)
 tab2 = ttk.Frame(tab_parent)
+tab3 = ttk.Frame(tab_parent)
 tab_parent.bind("<<NotebookTabChanged>>", on_tab_selected)
 tab_parent.add(tab1, text="All Entries")
 tab_parent.add(tab2, text="Add New Entry")
+tab_parent.add(tab3, text="Search")
 
 fName = tk.StringVar()
 fam = tk.StringVar()
 job = tk.StringVar()
+search_text = tk.StringVar()
 
 fNameTabTwo = tk.StringVar()
 famTabTwo = tk.StringVar()
@@ -233,6 +236,18 @@ jobLabelTabTwo.grid(row=2, column=0, padx=15, pady=15)
 jobEntryTabTwo.grid(row=2, column=1, padx=15, pady=15)
 buttonCommit.grid(row=4, column=0, padx=15, pady=15)
 buttonAddImage.grid(row=4, column=2, padx=15, pady=15)
+###TAB 3
+search_family = tk.Entry(tab3, textvariable=search_text)
+search_text_var = tk.StringVar()
+options_var = tk.StringVar()
+contents = {'Graphic Artist', 'IT Manager', 'Programmer', 'Systems Analyst', 'Support','Developer'}
+options_var.set("Select Job Title")
+dropdown = tk.OptionMenu(tab3,options_var,*contents)
+buttonSearch = tk.Button(tab3,text="Search",command=search_records)
+###TAB 3 Grid
+search_family.grid(row=0,column=0,padx=15,pady=15)
+dropdown.grid(row=0,column=1,padx=15,pady=15)
+buttonSearch.grid(row=0,column=2,padx=15,pady=15)
 
 success = load_database_results()
 if success:
