@@ -1,7 +1,7 @@
 
 # User Database
 
-The program streams real time tweets from Twitter and filters for the specified *#Hashtag.* It will stream for as long as the user has specified.
+The created database can be altered and viewed through phpMyAdmin. It currently takes entries for first and last name, as well as the job position.
 
 ### Tools
 -  *Python, Visual Studio Code, Tweepy, MySQL, phpMyAdmin*
